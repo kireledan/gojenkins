@@ -49,9 +49,9 @@ type ParameterDefinition struct {
 		Name  string      `json:"name"`
 		Value interface{} `json:"value"`
 	} `json:"defaultParameterValue"`
-	Description string `json:"description"`
-	Name        string `json:"name"`
-	Type        string `json:"type"`
+	Description string   `json:"description"`
+	Name        string   `json:"name"`
+	Type        string   `json:"type"`
 	Choices     []string `json:"choices,omitempty"`
 }
 
@@ -122,12 +122,7 @@ func (j *Job) GetDetails() *JobResponse {
 }
 
 func (j *Job) GetBuild(ctx context.Context, id int64) (*Build, error) {
-	// use job embedded URL to properly handle jobs in folders
-	url, err := url.Parse(j.Raw.URL)
-	if err != nil {
-		return nil, err
-	}
-	jobURL := url.Path
+	jobURL := j.Base
 	build := Build{Jenkins: j.Jenkins, Job: j, Raw: new(BuildResponse), Depth: 1, Base: jobURL + "/" + strconv.FormatInt(id, 10)}
 	status, err := build.Poll(ctx)
 	if err != nil {
